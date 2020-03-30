@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
             view.invalidate()
         }
 
-        val sleepTime = targetMillisPerFrame - (System.currentTimeMillis() - startTime)
+        val sleepTime = (targetMillisPerFrame - (System.currentTimeMillis() - startTime)).coerceAtLeast(0)
 
         delay(sleepTime)
     }
