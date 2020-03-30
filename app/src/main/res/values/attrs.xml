@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CylinderView">
+        <attr name="colorTop" format="color" />
+        <attr name="colorBody" format="color" />
+        <attr name="spinDirectionDown" format="boolean" />
+    </declare-styleable>
+</resources>
