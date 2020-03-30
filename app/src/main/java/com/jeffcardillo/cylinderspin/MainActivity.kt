@@ -2,6 +2,7 @@ package com.jeffcardillo.cylinderspin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.core.view.children
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
@@ -10,6 +11,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+
+    private val targetFps = 60
+    private val targetMillisPerFrame = 1000 / targetFps
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +27,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun invalidateCylinder() {
+        val startTime = System.currentTimeMillis()
+
         for (view in root.children) {
             view.invalidate()
         }
-        delay(40)
+
+        val sleepTime = targetMillisPerFrame - (System.currentTimeMillis() - startTime)
+
+        delay(sleepTime)
     }
 }
