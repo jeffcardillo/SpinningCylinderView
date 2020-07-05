@@ -17,7 +17,7 @@ Using just the `cosine` function I was able to make two circles oscillate opposi
 
 ![](docs/progression_1.gif)
 
-Next, I wanted to change the drawing order of the circles so that as they "spun" they would switch which one appeared above the other. Currently I'm just doing this by checking if the `cosine` value is decreasing or increasing and chaning the drawing order appropriately. Note that this gif looks funny out of context because the color jumps from one circle to the other, but this represents the outside vs. the inside of the circle being shown. The visual after this gif will tie it together:
+Next, I wanted to change the drawing order of the circles so that as they "spun" the top and bottom circle would switch which appeared above the other. Currently I'm just doing this by checking if the `cosine` value is decreasing or increasing and changing the drawing order appropriately. Note that this gif looks funny out of context because the color jumps from one circle to the other, but this represents the outside vs. the inside of the circle being shown. The next visual will tie this concept together:
 
 ![](docs/progression_2.gif)
 

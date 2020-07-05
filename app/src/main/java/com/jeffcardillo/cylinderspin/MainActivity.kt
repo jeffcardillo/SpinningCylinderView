@@ -1,11 +1,9 @@
 package com.jeffcardillo.cylinderspin
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,14 +17,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // kick off render loop...
         GlobalScope.launch {
             while(true) {
-                invalidateCylinder()
+                invalidateAllViews()
             }
         }
     }
 
-    private suspend fun invalidateCylinder() {
+    /*
+     * Measures the amount of time it takes to render all views in the layout
+     * and sleep for targetMillisPerFrame - timeToRender
+     */
+    private suspend fun invalidateAllViews() {
         val startTime = System.currentTimeMillis()
 
         for (view in root.children) {

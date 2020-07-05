@@ -30,9 +30,10 @@ class CylinderView @JvmOverloads constructor(
 
 
     init {
+        // load and apply xml attributes
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.CylinderView)
-        colorTop = attributes.getColor(R.styleable.CylinderView_colorTop, Color.CYAN)
-        colorBody = attributes.getColor(R.styleable.CylinderView_colorBody, Color.BLUE)
+        this.colorTop = attributes.getColor(R.styleable.CylinderView_colorTop, Color.CYAN)
+        this.colorBody = attributes.getColor(R.styleable.CylinderView_colorBody, Color.BLUE)
         val spinDirectionDown = attributes.getBoolean(R.styleable.CylinderView_spinDirectionDown, true)
 
        when (spinDirectionDown) {
@@ -49,14 +50,13 @@ class CylinderView @JvmOverloads constructor(
         attributes.recycle()
     }
 
-
-    private val body = Paint().apply {
+    private val bodyPaint = Paint().apply {
         isAntiAlias = true
         color = colorBody
         style = Paint.Style.FILL
     }
 
-    private val top = Paint().apply {
+    private val topPaint = Paint().apply {
         isAntiAlias = true
         color =colorTop
         style = Paint.Style.FILL
@@ -77,23 +77,20 @@ class CylinderView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        drawStep += 0.05f * direction
-
         // clear canvas
         canvas?.drawColor(Color.TRANSPARENT)
 
+        // move sin and cos along the x axis to get new y values
+        drawStep += 0.05f * direction
         val cosMod = cos(drawStep.toDouble())
         val sinMod = sin(drawStep.toDouble())
 
-        if (oldMod < cosMod) {
-            drawSide1(canvas, sinMod, cosMod, body)
-            drawCylinderBody(canvas, cosMod, body)
-            drawSide2(canvas, sinMod, cosMod, top)
-        } else {
-            drawSide2(canvas, sinMod, cosMod, body)
-            drawCylinderBody(canvas, cosMod, body)
-            drawSide1(canvas, sinMod, cosMod,top)
-        }
+        // detect when 180 degree rotation completed
+        val isFront = (oldMod < cosMod)
+
+        drawSide(canvas, isFront, sinMod, cosMod, bodyPaint)
+        drawCylinderBody(canvas, cosMod, bodyPaint)
+        drawSide(canvas, !isFront, sinMod, cosMod, topPaint)
 
         oldMod = cosMod
     }
@@ -107,27 +104,21 @@ class CylinderView @JvmOverloads constructor(
             paint)
     }
 
-    private fun drawSide1(canvas: Canvas?, sinMod: Double, cosMod: Double, paint: Paint) {
+    private fun drawSide(canvas: Canvas?, isFront: Boolean, sinMod: Double, cosMod: Double, paint: Paint) {
+        // spinOffset tracks the "rotation" of the cylinder
         val spinOffset = (cosMod * cylinderHeight)
-        val circleSquash = (halfCylinderWidth*sinMod)
-        canvas?.drawOval(
-            centerX - halfCylinderWidth,
-            (centerY - spinOffset*direction - circleSquash).toFloat(),
-            centerX + halfCylinderWidth,
-            (centerY - spinOffset*direction + circleSquash).toFloat(),
-            paint
-        )
-    }
 
-    private fun drawSide2(canvas: Canvas?, sinMod: Double, cosMod: Double, paint: Paint) {
-        val spinOffset = (cosMod * cylinderHeight)
+        // circleSquash flattens or heightens the circle based on the sinMod
         val circleSquash = (halfCylinderWidth*sinMod)
+
+        // topMod will change the sign of the vertical offset, moving the oval up or down
+        val topMod = if (isFront) -1 else 1
 
         canvas?.drawOval(
             centerX - halfCylinderWidth,
-            (centerY + spinOffset*direction - circleSquash).toFloat(),
+            (centerY + topMod*spinOffset*direction - circleSquash).toFloat(),
             centerX + halfCylinderWidth,
-            (centerY + spinOffset*direction + circleSquash).toFloat(),
+            (centerY + topMod*spinOffset*direction + circleSquash).toFloat(),
             paint
         )
     }
