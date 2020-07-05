@@ -74,25 +74,27 @@ class CylinderView @JvmOverloads constructor(
         super.onSizeChanged(w, h, oldw, oldh)
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        // clear canvas
-        canvas?.drawColor(Color.TRANSPARENT)
+        canvas.apply {
+            // clear canvas
+            drawColor(Color.TRANSPARENT)
 
-        // move sin and cos along the x axis to get new y values
-        drawStep += 0.05f * direction
-        val cosMod = cos(drawStep.toDouble())
-        val sinMod = sin(drawStep.toDouble())
+            // move sin and cos along the x axis to get new y values
+            drawStep += 0.05f * direction
+            val cosMod = cos(drawStep.toDouble())
+            val sinMod = sin(drawStep.toDouble())
 
-        // detect when 180 degree rotation completed
-        val isFront = (oldMod < cosMod)
+            // detect when 180 degree rotation completed
+            val isFront = (oldMod < cosMod)
 
-        drawSide(canvas, isFront, sinMod, cosMod, bodyPaint)
-        drawCylinderBody(canvas, cosMod, bodyPaint)
-        drawSide(canvas, !isFront, sinMod, cosMod, topPaint)
+            drawSide(this, isFront, sinMod, cosMod, bodyPaint)
+            drawCylinderBody(this, cosMod, bodyPaint)
+            drawSide(this, !isFront, sinMod, cosMod, topPaint)
 
-        oldMod = cosMod
+            oldMod = cosMod
+        }
     }
 
     private fun drawCylinderBody(canvas: Canvas?, cosMod: Double, paint: Paint) {
